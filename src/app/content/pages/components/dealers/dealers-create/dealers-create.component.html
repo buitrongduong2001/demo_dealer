@@ -1,0 +1,306 @@
+<h3 mat-dialog-title>Tạo mới đại lý</h3>
+<mat-divider></mat-divider>
+
+<!-- *ngIf="validatorForm" -->
+<div #alertErrorForm class="alert-error-form-child hide">
+	<span class="fas fa-exclamation-circle"></span>
+	<span class="msg">Error: Vui lòng điền đầy đủ thông tin phòng ban!</span>
+	<div (click)="closeAlert()" class="close-btn">
+		<span class="fas fa-times"></span>
+	</div>
+</div>
+<div #alertWarningForm class="alert-warning-form-child hide"
+	>
+	<span class="fas fa-exclamation-circle"></span>
+	<span class="msg">Warning: {{response.msg}}!</span>
+	<div (click)="closeAlertWarning()" class="close-btn">
+		<span class="fas fa-times"></span>
+	</div>
+</div>
+
+<form #formCreateDealer class="example-form" [formGroup]="formData" (ngSubmit)="onSubmitForm()">
+	<mat-dialog-content class="mat-typography">
+		<h4>Thông tin đại lý</h4>
+		<div>
+			<div class="row">
+				<div class="col-9">
+					<div class="row">
+						<!-- Loại đại lý -->
+						<div class="col">
+							<mat-form-field appearance="outline" class="field-dealer">
+								<mat-label>Loại đại lý</mat-label>
+								<mat-select formControlName="levelDealer" [errorStateMatcher]="matcher">
+									<mat-option *ngFor="let option of levelDealerOption" [value]="option.id">
+										{{ option.title }}
+									</mat-option>
+								</mat-select>
+
+							</mat-form-field>
+						</div>
+						<!-- Tên đại lý -->
+						<div class="col">
+							<mat-form-field appearance="outline" class="field-dealer name-dealer">
+								<mat-label>Tên đại lý</mat-label>
+								<input matInput formControlName="nameDealer" placeholder="Nhập tên đại lý"
+									[errorStateMatcher]="matcher" />
+								<mat-error *ngIf="
+										formData
+											.get('nameDealer')
+											.hasError('required')
+									">
+									Thông tin này là bắt buộc
+								</mat-error>
+							</mat-form-field>
+						</div>
+
+						<!-- Số điện thoại -->
+						<div class="col">
+							<mat-form-field appearance="outline" class="field-dealer phone-dealer">
+								<mat-label>Số điện thoại đại lý</mat-label>
+								<input matInput formControlName="phoneDealer" placeholder="Nhập số điện thoại đại lý"
+									[errorStateMatcher]="matcher"/>
+								<mat-error *ngIf="
+										formData
+											.get('phoneDealer')
+											.hasError('required')
+									">
+									Thông tin này là bắt buộc.
+								</mat-error>
+								<mat-error *ngIf="
+										formData
+											.get('phoneDealer')
+											.hasError('pattern')
+									">
+									Số điện thoại không hợp lệ.
+								</mat-error>
+							</mat-form-field>
+						</div>
+
+						<!-- Email -->
+						<div class="col">
+							<mat-form-field appearance="outline" class="field-dealer email-dealer">
+								<mat-label>Email</mat-label>
+								<input matInput formControlName="emailDealer" placeholder="Nhập email đại lý"
+									[errorStateMatcher]="matcher" />
+								<mat-error *ngIf="
+										formData
+											.get('emailDealer')
+											.hasError('email')
+									">
+									Vui lòng nhập đúng định dạng email
+								</mat-error>
+								<mat-error *ngIf="
+										formData
+											.get('emailDealer')
+											.hasError('required')
+									">
+									Vui lòng nhập địa chỉ email
+								</mat-error>
+							</mat-form-field>
+						</div>
+						<!-- Địa chỉ -->
+						<div class="col">
+							<mat-form-field appearance="outline" class="field-dealer apartment-dealer">
+								<mat-label>Địa chỉ</mat-label>
+								<input matInput formControlName="apartmentDealer" placeholder="Nhập địa chỉ"
+									[errorStateMatcher]="matcher" />
+								<mat-error *ngIf="
+										formData
+											.get('apartmentDealer')
+											.hasError('required')
+									">
+									Vui lòng nhập địa chỉ
+								</mat-error>
+							</mat-form-field>
+						</div>
+
+						<div class="col">
+							<mat-form-field appearance="outline" class="field-dealer">
+								<mat-label>Thành phố</mat-label>
+								<mat-select [formControlName]="'cityDealer'" (selectionChange)="
+										getAllDistrictByCity($event.value)
+									" [errorStateMatcher]="matcher">
+									<mat-option *ngFor="let option of cities" [value]="option.id">
+										{{ option.name }}
+									</mat-option>
+								</mat-select>
+								<mat-error *ngIf="
+										formData
+											.get('apartmentDealer')
+											.hasError('required')
+									">
+									Vui lòng chọn thành phố
+								</mat-error>
+							</mat-form-field>
+						</div>
+
+						<!-- Quận huyện -->
+						<div class="col">
+							<mat-form-field appearance="outline" class="field-dealer">
+								<mat-label>Quận/Huyện</mat-label>
+								<mat-select [formControlName]="'districtDealer'" [errorStateMatcher]="matcher">
+									<mat-option *ngFor="let option of districts" [value]="option.id">
+										{{ option.name }}
+									</mat-option>
+								</mat-select>
+								<mat-error *ngIf="
+										formData
+											.get('districtDealer')
+											.hasError('required')
+									">
+									Vui lòng chọn Quận/Huyện
+								</mat-error>
+							</mat-form-field>
+						</div>
+						<div class="col"></div>
+					</div>
+					<div class="row">
+						<!-- Mã số thuế -->
+						<div class="col">
+							<mat-form-field appearance="outline" class="field-dealer tax-dealer">
+								<mat-label>Mã số thuế</mat-label>
+								<input matInput formControlName="taxCode" placeholder="Nhập mã số thuế"
+									[errorStateMatcher]="matcher" />
+								<mat-error *ngIf="
+										formData
+											.get('taxCode')
+											.hasError('required')
+									">
+									Vui lòng nhập mã số thuế
+								</mat-error>
+							</mat-form-field>
+						</div>
+						<!-- Tài khoản số -->
+						<div class="col">
+							<mat-form-field appearance="outline" class="field-dealer numberBank-dealer">
+								<mat-label>Số tài khoản</mat-label>
+								<input matInput formControlName="numberBank" placeholder="Nhập số tài khoản"
+									[errorStateMatcher]="matcher" />
+								<mat-error *ngIf="
+										formData
+											.get('numberBank')
+											.hasError('required')
+									">
+									Vui lòng nhập mã số tài khoản
+								</mat-error>
+							</mat-form-field>
+						</div>
+						<!-- Địa chỉ mở -->
+						<div class="col">
+							<mat-form-field appearance="outline" class="field-dealer addressBank-dealer">
+								<mat-label>Mở tại</mat-label>
+								<input matInput formControlName="addressBank" placeholder="Nhập nơi mở"
+									[errorStateMatcher]="matcher" />
+								<mat-error *ngIf="
+										formData
+											.get('addressBank')
+											.hasError('required')
+									">
+									Vui lòng nhập nơi mở tài khoản
+								</mat-error>
+							</mat-form-field>
+						</div>
+
+						<!-- Người đại diện -->
+						<div class="col">
+							<mat-form-field appearance="outline" class="field-dealer representative-dealer">
+								<mat-label>Nguời đại diện</mat-label>
+								<input matInput formControlName="representative" placeholder="Nhập người đại diện"
+									[errorStateMatcher]="matcher" />
+								<mat-error *ngIf="
+										formData
+											.get('representative')
+											.hasError('required')
+									">
+									Vui lòng nhập người đại diện
+								</mat-error>
+							</mat-form-field>
+						</div>
+					</div>
+				</div>
+				<div class="col-3">
+					<div class="img-maps">
+						<img mat-card-image width="100%"
+							src="../../../../../../assets/app/media/img/dealer/workplace.jpg">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm">
+					<mat-form-field class="example-full-width description-dealer" appearance="outline">
+						<mat-label>Mô tả</mat-label>
+						<textarea matInput rows="4" #message maxlength="500" formControlName="description"
+							[errorStateMatcher]="matcher"></textarea>
+						<mat-hint align="end">{{ message.value.length }} / 500</mat-hint>
+					</mat-form-field>
+				</div>
+			</div>
+
+			<mat-divider></mat-divider>
+			<div>
+				<div class="d-flex title-info-department">
+					<h4>Tạo thông tin phòng ban</h4>
+
+				</div>
+				<div class="department-content row">
+					<div class="container-deparment-border col-11">
+						<div class="title-action d-flex">
+
+							<!-- <div class="title-apartment">
+										<p>
+											<input placeholder="Nhập tên phòng ban" formControlName="nameDepartment" class="form-control form-control-sm inp-value-name-department" type="text">
+										</p>
+									</div> -->
+							<div class="add-nember" (click)="addNewMember()">
+								<p>
+									Thêm thành viên
+									<button mat-mini-fab color="primary" type="button">
+										<mat-icon>add</mat-icon>
+									</button>
+								</p>
+							</div>
+						</div>
+						<div *ngFor="let i of listMemberForm">
+							<m-add-member [item]="i" (delete)="deleteMember($event)" [matcher]="matcher">
+
+							</m-add-member>
+						</div>
+						<!-- (newItemEvent)="receiveForm($event)" -->
+						<!-- <div class="append-member row">
+										<div class="property role-name col">
+											<p>Giám đốc</p>
+										</div>
+										<div class="name-member col property">
+											<p>Nguyễn Trung Trường</p>
+										</div>
+										<div class="phone-member col property">
+											<p>03621575152</p>
+										</div>
+										<div class="birth-date col property">
+											<p>12/02/2001</p>
+						.				</div>
+										<div class="address-member col property">
+											<p>
+												<input disabled value="Số nhà 69, Thường Tín, Hà Nội" />
+											</p>
+										</div>
+										<div class="sex col property">
+											<p>Nam</p>
+										</div>
+										<div class="btn-remove col property">
+											<button class="btn-remove-member" type="button">
+												<i class="bi bi-trash"></i>
+											</button>
+										</div>
+									</div> -->
+					</div>
+				</div>
+				<!-- </ng-template> -->
+			</div>
+		</div>
+	</mat-dialog-content>
+	<mat-dialog-actions align="center" class="action-popup">
+		<button mat-stroked-button mat-dialog-close color="warn">Cancel</button>
+		<button type="submit" mat-stroked-button color="primary">Lưu</button>
+	</mat-dialog-actions>
+</form>

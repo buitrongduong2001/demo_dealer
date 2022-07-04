@@ -1,0 +1,345 @@
+@import "~bootstrap-icons/font/bootstrap-icons.css";
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+	color: #000;
+}
+::ng-deep .mat-dialog-content {
+	max-height: 76vh;
+}
+.mat-form-field {
+	font-size: small;
+	width: 100%;
+	padding: 0;
+}
+
+.field-dealer {
+	max-width: 300px;
+}
+.title-info-department {
+	padding: 15px 10px;
+}
+::ng-deep .mat-mini-fab {
+	width: 30px;
+	height: 30px;
+}
+::ng-deep {
+	.mat-mini-fab .mat-button-wrapper {
+		padding: 0px 0;
+		display: inline-block;
+		line-height: 4px;
+	}
+	.mat-flat-button.mat-primary,
+	.mat-raised-button.mat-primary,
+	.mat-fab.mat-primary,
+	.mat-mini-fab.mat-primary {
+		background-color: #10cb26;
+	}
+	.m-mat-dialog-container__wrapper .mat-dialog-container {
+		padding: 31px;
+		overflow-x: hidden;
+		// overflow-y: hidden;
+	}
+}
+.example-button-container {
+	margin-left: 10px;
+}
+
+.description-dealer {
+	max-width: 75%;
+}
+.list-department {
+	padding-left: 20px;
+	padding-bottom: 30px;
+}
+
+.name-member {
+	max-width: 200px;
+}
+.inp-name-member {
+	max-width: 200px;
+}
+
+.field-department {
+	font-size: 8px;
+}
+
+.form-control {
+	border-color: #808288 !important;
+}
+
+.department-content {
+	margin-bottom: 30px;
+}
+.container-deparment-border {
+	border: 1px solid #000;
+}
+.container-deparment-border:hover {
+	border: 2px solid rgb(60, 58, 58);
+}
+.title-action {
+	justify-content: end;
+	padding: 15px 10px;
+}
+.title-action p {
+	margin-top: auto; /* Important */
+	margin-bottom: auto; /* Important */
+	font-weight: 530;
+}
+.title-apartment {
+	display: flex;
+	border: 1px solid #616161;
+	justify-content: center;
+	width: 245px;
+	height: 31px;
+}
+.add-nember {
+	display: flex; /* Important */
+	border: 1px solid rgb(97, 97, 97);
+	justify-content: center;
+	width: 200px;
+	height: 40px;
+}
+.add-nember p {
+	font-weight: 530;
+	margin-top: auto; /* Important */
+	margin-bottom: auto; /* Important */
+}
+.add-nember button {
+	margin-left: 10px;
+}
+.add-nember:hover {
+	cursor: pointer;
+}
+.list-member-department {
+	padding-bottom: 20px;
+}
+.list-member-department ::ng-deep .mat-form-field-flex {
+	width: 70%;
+}
+.append-member {
+	margin-bottom: 15px;
+}
+.property {
+	display: flex;
+	margin-left: 10px;
+}
+
+.property p {
+	margin-top: auto;
+	margin-bottom: auto;
+}
+.sex,
+.birth-date,
+.role-name,
+.phone-member {
+	max-width: 160px;
+}
+.inp-sex,
+.inp-birth-date,
+.inp-role-name,
+.inp-phone-member {
+	max-width: 160px;
+}
+
+.address-member {
+	max-width: 350px;
+}
+.address-member p {
+	width: 100%;
+}
+.inp-address-member {
+	max-width: 350px;
+}
+.inp-address-member p {
+	width: 100%;
+}
+.address-member p input {
+	width: 100%;
+	background: none;
+	border: none;
+}
+.btn-remove {
+	max-width: 50px;
+}
+.inp-btn-remove {
+	padding-left: 10px;
+}
+// icon
+.btn-remove-department {
+	border: none;
+	background: none;
+}
+.btn-remove-department i {
+	color: #f80808;
+	font-size: 35px;
+}
+.btn-remove-member {
+	border: none;
+	background: none;
+}
+.btn-remove-member i {
+	color: #f80808;
+	font-size: 18px;
+}
+.title-apartment p {
+	width: 100%;
+}
+.inp-value-name-department {
+	border: none;
+	padding-left: 12px;
+	background: none;
+	width: 100%;
+	font-size: medium;
+	font-weight: 550;
+}
+.img-maps img{
+	height: 226px;
+    border-radius: 12px;
+}
+
+
+//css alert
+.alert-error-form-child{
+	position: absolute;
+    z-index: 100;
+	background: #f9bbbb;
+	padding: 20px 40px;
+	min-width: 420px;
+	position: absolute;
+	right: 0;
+	top: 10px;
+	border-radius: 4px;
+	border-left: 8px solid #e34444;
+	overflow: hidden;
+	opacity: 0;
+	pointer-events: none;
+  }
+  .alert-error-form-child.showAlert{
+	opacity: 1;
+	pointer-events: auto;
+  }
+  .alert-error-form-child.show{
+	animation: show_slide 1s ease forwards;
+  }
+  @keyframes show_slide {
+	0%{
+	  transform: translateX(100%);
+	}
+	40%{
+	  transform: translateX(-10%);
+	}
+	80%{
+	  transform: translateX(0%);
+	}
+	100%{
+	  transform: translateX(-10px);
+	}
+  }
+  .alert-error-form-child.hide{
+	animation: hide_slide 1s ease forwards;
+  }
+  @keyframes hide_slide {
+	0%{
+	  transform: translateX(-10px);
+	}
+	40%{
+	  transform: translateX(0%);
+	}
+	80%{
+	  transform: translateX(-10%);
+	}
+	100%{
+	  transform: translateX(100%);
+	}
+  }
+  .alert-error-form-child .fa-exclamation-circle{
+	position: absolute;
+	left: 20px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #e34444;
+	font-size: 30px;
+  }
+  .alert-error-form-child .msg{
+	padding: 0 20px;
+	font-size: 18px;
+	color: #e34444;
+  }
+  .alert-error-form-child .close-btn{
+	position: absolute;
+	right: 0px;
+	top: 50%;
+	transform: translateY(-50%);
+	background: #ff8080;
+	padding: 20px 18px;
+	cursor: pointer;
+  }
+  .alert-error-form-child .close-btn:hover{
+	background: #ff8080;
+  }
+  .alert-error-form-child .close-btn .fas{
+	color: #e34444;
+	font-size: 22px;
+	line-height: 40px;
+  }
+
+
+
+// Css warning
+.alert-warning-form-child{
+	position: absolute;
+    z-index: 100;
+	background: #ffdb9b;
+	padding: 20px 40px;
+	min-width: 420px;
+	position: absolute;
+	right: 0;
+	top: 10px;
+	border-radius: 4px;
+	border-left: 8px solid #ffa502;
+	overflow: hidden;
+	opacity: 0;
+	pointer-events: none;
+  }
+  .alert-warning-form-child.showAlert{
+	opacity: 1;
+	pointer-events: auto;
+  }
+  .alert-warning-form-child.show{
+	animation: show_slide 1s ease forwards;
+  }
+  .alert-warning-form-child.hide{
+	animation: hide_slide 1s ease forwards;
+  }
+  .alert-warning-form-child .fa-exclamation-circle{
+	position: absolute;
+	left: 20px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #ce8500;
+	font-size: 30px;
+  }
+  .alert-warning-form-child .msg{
+	padding: 0 20px;
+	font-size: 18px;
+	color: #ce8500;
+  }
+  .alert-warning-form-child .close-btn{
+	position: absolute;
+	right: 0px;
+	top: 50%;
+	transform: translateY(-50%);
+	background: #ffd080;
+	padding: 20px 18px;
+	cursor: pointer;
+  }
+  .alert-warning-form-child .close-btn:hover{
+	background: #ffc766;
+  }
+  .alert-warning-form-child .close-btn .fas{
+	color: #ce8500;
+	font-size: 22px;
+	line-height: 40px;
+  }
+.action-popup button{
+	margin: 0 15px;
+}

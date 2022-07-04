@@ -1,0 +1,102 @@
+<form [formGroup]="formData">
+	<div class="append-member row">
+		<div class="property inp-name-department col">
+			<p>
+				<mat-form-field appearance="outline" class="field-department representative-dealer inp-value">
+					<mat-label>Phòng ban</mat-label>
+					<input matInput formControlName="nameDepartment" placeholder="Nhập tên phòng ban" />
+					<mat-error *ngIf="formData.get('nameDepartment').hasError('required')">
+						Vui lòng nhập tên phòng ban
+					</mat-error>
+				</mat-form-field>
+			</p>
+		</div>
+		<div class="property inp-role-name col">
+			<p>
+				<mat-form-field appearance="outline" class="field-department representative-dealer inp-value">
+					<mat-label>Vai trò</mat-label>
+					<input matInput formControlName="roleStaff" placeholder="Nhập vai trò" />
+					<mat-error *ngIf="formData.get('roleStaff').hasError('required')">
+						Vui lòng nhập vai trò
+					</mat-error>
+				</mat-form-field>
+			</p>
+		</div>
+		<div class="inp-name-member col property">
+			<p>
+				<mat-form-field appearance="outline" class="field-department representative-dealer inp-value">
+					<mat-label>Họ tên</mat-label>
+					<input matInput formControlName="name" placeholder="Nhập họ & tên" />
+					<mat-error *ngIf="formData.get('name').hasError('required')">
+						Vui lòng nhập tên
+					</mat-error>
+				</mat-form-field>
+			</p>
+		</div>
+		<div class="inp-phone-member col property">
+			<p>
+				<mat-form-field appearance="outline" class="field-department representative-dealer inp-value">
+					<mat-label>Số điện thoại</mat-label>
+					<input matInput formControlName="phone" placeholder="Nhập số điện thoại " />
+					<mat-error *ngIf="formData.get('phone').hasError('required')">
+						Vui lòng nhập số điện thoại
+					</mat-error>
+					<mat-error *ngIf="formData.get('phone').hasError('pattern')">
+						Sai định dạng số điện thoại.
+					</mat-error>
+				</mat-form-field>
+			</p>
+		</div>
+		<div class="inp-birth-date col property">
+			<p>
+
+				<mat-form-field appearance="outline" class="field-department representative-dealer inp-value">
+					<mat-label>Ngày sinh (DD-MM-YYYY)</mat-label>
+					<input matInput formControlName="birthDate" placeholder="Nhập ngày sinh" [matDatepicker]="picker1">
+					<mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+					<mat-datepicker #picker1></mat-datepicker>
+					<mat-error *ngIf="formData.get('birthDate').hasError('required')">
+						Vui lòng nhập ngày sinh.
+					</mat-error>
+				</mat-form-field>
+				<!-- <mat-form-field appearance="outline" >
+
+					<input matInput  [errorStateMatcher]="matcher"/>
+
+				</mat-form-field> -->
+			</p>
+		</div>
+		<div class="inp-address-member col property">
+			<p>
+				<mat-form-field appearance="outline" class="field-department representative-dealer inp-value">
+					<mat-label>Địa chỉ</mat-label>
+					<input matInput formControlName="addressStr" placeholder="Nhập địa chỉ" />
+
+					<mat-error *ngIf="formData.get('addressStr').hasError('required')">
+						Vui lòng nhập địa chỉ
+					</mat-error>
+				</mat-form-field>
+			</p>
+		</div>
+		<div class="inp-sex col property">
+			<p>
+				<mat-form-field appearance="outline" class="field-department representative-dealer inp-value">
+					<mat-label>Giới tính</mat-label>
+					<mat-select formControlName="sex">
+						<mat-option value="1">Nam</mat-option>
+						<mat-option value="2">Nữ</mat-option>
+						<mat-option value="3">Khác</mat-option>
+					</mat-select>
+					<mat-error *ngIf="formData.get('sex').hasError('required')">
+						Vui lòng chọn giới tính
+					</mat-error>
+				</mat-form-field>
+			</p>
+		</div>
+		<div class="btn-remove inp-btn-remove d-flex col" (click)="deleteMe()">
+			<button class="btn-remove-member" type="button">
+				<i class="bi bi-trash"></i>
+			</button>
+		</div>
+	</div>
+</form>
