@@ -1,30 +1,40 @@
-import { BehaviorSubject, Observable, Subject, from, throwError } from 'rxjs';
-import { map, catchError, tap, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject, from, throwError } from "rxjs";
+import { map, catchError, tap, switchMap } from "rxjs/operators";
 
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { AuthService } from 'ngx-auth';
+import { Injectable } from "@angular/core";
+import {
+	HttpClient,
+	HttpErrorResponse,
+	HttpHeaders,
+} from "@angular/common/http";
+import { AuthService } from "ngx-auth";
 
-import { TokenStorage } from './token-storage.service';
-import { UtilsService } from '../services/utils.service';
-import { AccessData } from './access-data';
-import { Credential } from './credential';
+import { TokenStorage } from "./token-storage.service";
+import { UtilsService } from "../services/utils.service";
+import { AccessData } from "./access-data";
+import { Credential } from "./credential";
+import { StaffLoginDto } from "./staff-login";
 
 @Injectable()
 export class AuthenticationService implements AuthService {
-	API_URL = 'api';
-	API_ENDPOINT_LOGIN = '/login';
-	API_ENDPOINT_REFRESH = '/refresh';
-	API_ENDPOINT_REGISTER = '/register';
+	API_URL = "http://localhost:8098/agent-api/api/auth";
+	API_ENDPOINT_LOGIN = "/login";
+	API_ENDPOINT_REFRESH = "/refresh";
+	API_ENDPOINT_REGISTER = "/register";
 
 	public onCredentialUpdated$: Subject<AccessData>;
-
+	httpOption: any;
 	constructor(
 		private http: HttpClient,
 		private tokenStorage: TokenStorage,
 		private util: UtilsService
 	) {
 		this.onCredentialUpdated$ = new Subject();
+		this.httpOption = {
+			headers: new HttpHeaders({
+				"Content-Type": "application/json; charset=utf-8",
+			}),
+		};
 	}
 
 	/**
@@ -34,9 +44,14 @@ export class AuthenticationService implements AuthService {
 	 * @memberOf AuthService
 	 */
 	public isAuthorized(): Observable<boolean> {
-		return this.tokenStorage.getAccessToken().pipe(map(token => !!token));
+		return this.tokenStorage.getAccessToken().pipe(map((token) => !!token));
 	}
-
+	// public isAuthenticated(): boolean {
+	// 	const token = localStorage.getItem('accessToken');
+	// 	// Check whether the token is expired and return
+	// 	// true or false
+	// 	return !this.jwtHelper.isTokenExpired(token);
+	//   }
 	/**
 	 * Get access token
 	 * @description Should return access token in Observable from e.g. localStorage
@@ -63,10 +78,15 @@ export class AuthenticationService implements AuthService {
 	public refreshToken(): Observable<AccessData> {
 		return this.tokenStorage.getRefreshToken().pipe(
 			switchMap((refreshToken: string) => {
-				return this.http.get<AccessData>(this.API_URL + this.API_ENDPOINT_REFRESH + '?' + this.util.urlParam(refreshToken));
+				return this.http.get<AccessData>(
+					this.API_URL +
+						this.API_ENDPOINT_REFRESH +
+						"?" +
+						this.util.urlParam(refreshToken)
+				);
 			}),
 			tap(this.saveAccessData.bind(this)),
-			catchError(err => {
+			catchError((err) => {
 				this.logout();
 				return throwError(err);
 			})
@@ -96,14 +116,16 @@ export class AuthenticationService implements AuthService {
 
 	/**
 	 * Submit login request
-	 * @param {Credential} credential
+	 * @param {DealerLoginDto} infoDealer
 	 * @returns {Observable<any>}
 	 */
-	public login(credential: Credential): Observable<any> {
+
+	public login(infoDealer: StaffLoginDto): Observable<any> {
 		// Expecting response from API
 		// tslint:disable-next-line:max-line-length
 		// {"id":1,"username":"admin","password":"demo","email":"admin@demo.com","accessToken":"access-token-0.022563452858263444","refreshToken":"access-token-0.9348573301432961","roles":["ADMIN"],"pic":"./assets/app/media/img/users/user4.jpg","fullname":"Mark Andre"}
-		return this.http.get<AccessData>(this.API_URL + this.API_ENDPOINT_LOGIN + '?' + this.util.urlParam(credential)).pipe(
+		const urlLogin = this.API_URL + this.API_ENDPOINT_LOGIN;
+		return this.http.post<StaffLoginDto>(urlLogin, infoDealer).pipe(
 			map((result: any) => {
 				if (result instanceof Array) {
 					return result.pop();
@@ -111,7 +133,7 @@ export class AuthenticationService implements AuthService {
 				return result;
 			}),
 			tap(this.saveAccessData.bind(this)),
-			catchError(this.handleError('login', []))
+			catchError(this.handleError("login", []))
 		);
 	}
 
@@ -121,7 +143,7 @@ export class AuthenticationService implements AuthService {
 	 * @param operation - name of the operation that failed
 	 * @param result - optional value to return as the observable result
 	 */
-	private handleError<T>(operation = 'operation', result?: any) {
+	private handleError<T>(operation = "operation", result?: any) {
 		return (error: any): Observable<any> => {
 			// TODO: send the error to remote logging infrastructure
 			console.error(error); // log to console instead
@@ -137,6 +159,7 @@ export class AuthenticationService implements AuthService {
 	public logout(refresh?: boolean): void {
 		this.tokenStorage.clear();
 		if (refresh) {
+			// location.reload();
 			location.reload(true);
 		}
 	}
@@ -147,11 +170,11 @@ export class AuthenticationService implements AuthService {
 	 * @param {AccessData} data
 	 */
 	private saveAccessData(accessData: AccessData) {
-		if (typeof accessData !== 'undefined') {
+		if (typeof accessData !== "undefined") {
 			this.tokenStorage
-				.setAccessToken(accessData.accessToken)
+				.setAccessToken(accessData.token)
 				.setRefreshToken(accessData.refreshToken)
-				.setUserRoles(accessData.roles);
+				.setUserRoles(accessData.user.keycodeArr);
 			this.onCredentialUpdated$.next(accessData);
 		}
 	}
@@ -164,13 +187,13 @@ export class AuthenticationService implements AuthService {
 	public register(credential: Credential): Observable<any> {
 		// dummy token creation
 		credential = Object.assign({}, credential, {
-			accessToken: 'access-token-' + Math.random(),
-			refreshToken: 'access-token-' + Math.random(),
-			roles: ['USER'],
+			accessToken: "access-token-" + Math.random(),
+			refreshToken: "access-token-" + Math.random(),
+			roles: ["USER"],
 		});
-		return this.http.post(this.API_URL + this.API_ENDPOINT_REGISTER, credential)
-			.pipe(catchError(this.handleError('register', []))
-		);
+		return this.http
+			.post(this.API_URL + this.API_ENDPOINT_REGISTER, credential)
+			.pipe(catchError(this.handleError("register", [])));
 	}
 
 	/**
@@ -179,9 +202,13 @@ export class AuthenticationService implements AuthService {
 	 * @returns {Observable<any>}
 	 */
 	public requestPassword(credential: Credential): Observable<any> {
-		return this.http.get(this.API_URL + this.API_ENDPOINT_LOGIN + '?' + this.util.urlParam(credential))
-			.pipe(catchError(this.handleError('forgot-password', []))
-		);
+		return this.http
+			.get(
+				this.API_URL +
+					this.API_ENDPOINT_LOGIN +
+					"?" +
+					this.util.urlParam(credential)
+			)
+			.pipe(catchError(this.handleError("forgot-password", [])));
 	}
-
 }

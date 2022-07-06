@@ -10,9 +10,9 @@
 <form class="m-login__form m-form" name="form" (ngSubmit)="f.form.valid && submit()" #f="ngForm" novalidate>
 	<div class="form-group">
 		<mat-form-field>
-			<mat-label>Email</mat-label>
-			<input matInput type="email" name="email" placeholder="Email address" autocomplete="off"
-				   [(ngModel)]="model.email" #email="ngModel" email="true" required>
+			<mat-label>Username</mat-label>
+			<input matInput type="text" name="username" placeholder="Username" autocomplete="off"
+				   [(ngModel)]="model.username" #username="ngModel" username="true" required>
 		</mat-form-field>
 	</div>
 	<div class="form-group">
@@ -35,17 +35,17 @@
 <!--end::Action-->
 
 <!--begin::Divider-->
-<div class="m-login__form-divider">
+<!-- <div class="m-login__form-divider">
 	<div class="m-divider">
 		<span></span>
 		<span translate="AUTH.GENERAL.OR">OR</span>
 		<span></span>
 	</div>
-</div>
+</div> -->
 <!--end::Divider-->
 
 <!--begin::Options-->
-<div class="m-login__options">
+<!-- <div class="m-login__options">
 	<a href="javascript:;" mat-raised-button color="primary">
 			<span>
 				<i class="fab fa-facebook-f"></i>&nbsp;
@@ -66,7 +66,7 @@
 				<span>Google</span>
 			</span>
 	</a>
-</div>
+</div> -->
 <!--end::Options-->
 <!--</div>-->
 <!--end::Signin-->

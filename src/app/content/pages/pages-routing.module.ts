@@ -13,7 +13,7 @@ const routes: Routes = [
 		canActivate: [NgxPermissionsGuard],
 		data: {
 			permissions: {
-				only: ["ADMIN", "USER"],
+				only: ["ROLE_ADMIN", "ROLE_SALE"],
 				except: ["GUEST"],
 				redirectTo: "/login",
 			},
@@ -83,7 +83,7 @@ const routes: Routes = [
 		loadChildren: "./auth/auth.module#AuthModule",
 		data: {
 			permissions: {
-				except: "ADMIN",
+				except: "ROLE_ADMIN",
 			},
 		},
 	},

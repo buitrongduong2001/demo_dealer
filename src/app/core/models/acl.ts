@@ -1,4 +1,4 @@
-import { ConfigModel } from '../interfaces/config';
+import { ConfigModel } from "../interfaces/config";
 
 export interface AclInterface {
 	permissions: any;
@@ -10,8 +10,8 @@ export class AclModel implements AclInterface, ConfigModel {
 
 	// default permissions
 	public permissions: any = {
-		ADMIN: ['canDoAnything'],
-		USER: ['canDoLimitedThings']
+		ROLE_ADMIN: ["canDoAnything"],
+		ROLE_SALE: ["canDoLimitedThings"],
 	};
 
 	// store an object of current user roles

@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { Observable, of } from "rxjs";
 
 @Injectable()
 export class TokenStorage {
@@ -8,7 +8,7 @@ export class TokenStorage {
 	 * @returns {Observable<string>}
 	 */
 	public getAccessToken(): Observable<string> {
-		const token: string = <string>localStorage.getItem('accessToken');
+		const token: string = <string>localStorage.getItem("accessToken");
 		return of(token);
 	}
 
@@ -17,7 +17,7 @@ export class TokenStorage {
 	 * @returns {Observable<string>}
 	 */
 	public getRefreshToken(): Observable<string> {
-		const token: string = <string>localStorage.getItem('refreshToken');
+		const token: string = <string>localStorage.getItem("refreshToken");
 		return of(token);
 	}
 
@@ -26,7 +26,7 @@ export class TokenStorage {
 	 * @returns {Observable<any>}
 	 */
 	public getUserRoles(): Observable<any> {
-		const roles: any = localStorage.getItem('userRoles');
+		const roles: any = localStorage.getItem("userRoles");
 		try {
 			return of(JSON.parse(roles));
 		} catch (e) {}
@@ -37,7 +37,7 @@ export class TokenStorage {
 	 * @returns {TokenStorage}
 	 */
 	public setAccessToken(token: string): TokenStorage {
-		localStorage.setItem('accessToken', token);
+		localStorage.setItem("accessToken", token);
 
 		return this;
 	}
@@ -47,7 +47,7 @@ export class TokenStorage {
 	 * @returns {TokenStorage}
 	 */
 	public setRefreshToken(token: string): TokenStorage {
-		localStorage.setItem('refreshToken', token);
+		localStorage.setItem("refreshToken", token);
 
 		return this;
 	}
@@ -59,7 +59,7 @@ export class TokenStorage {
 	 */
 	public setUserRoles(roles: any): any {
 		if (roles != null) {
-			localStorage.setItem('userRoles', JSON.stringify(roles));
+			localStorage.setItem("userRoles", JSON.stringify(roles));
 		}
 
 		return this;
@@ -69,8 +69,8 @@ export class TokenStorage {
 	 * Remove tokens
 	 */
 	public clear() {
-		localStorage.removeItem('accessToken');
-		localStorage.removeItem('refreshToken');
-		localStorage.removeItem('userRoles');
+		localStorage.removeItem("accessToken");
+		localStorage.removeItem("refreshToken");
+		localStorage.removeItem("userRoles");
 	}
 }
