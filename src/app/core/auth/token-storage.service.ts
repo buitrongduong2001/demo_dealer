@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
+import { Dealer } from "../class/dealer/dealer";
 
 @Injectable()
 export class TokenStorage {
@@ -10,6 +11,17 @@ export class TokenStorage {
 	public getAccessToken(): Observable<string> {
 		const token: string = <string>localStorage.getItem("accessToken");
 		return of(token);
+	}
+
+	/**
+	 * Get access token
+	 * @returns {Observable<any>}
+	 */
+	public getUserLogin(): Observable<any> {
+		const user: any = localStorage.getItem("user");
+		try {
+			return of(JSON.parse(user));
+		} catch (e) {}
 	}
 
 	/**
@@ -38,6 +50,15 @@ export class TokenStorage {
 	 */
 	public setAccessToken(token: string): TokenStorage {
 		localStorage.setItem("accessToken", token);
+		return this;
+	}
+
+	/**
+	 * Set user logged
+	 * @returns {TokenStorage}
+	 */
+	public setUserLogin(user: any): TokenStorage {
+		localStorage.setItem("user", JSON.stringify(user));
 
 		return this;
 	}
@@ -48,7 +69,6 @@ export class TokenStorage {
 	 */
 	public setRefreshToken(token: string): TokenStorage {
 		localStorage.setItem("refreshToken", token);
-
 		return this;
 	}
 
@@ -61,7 +81,6 @@ export class TokenStorage {
 		if (roles != null) {
 			localStorage.setItem("userRoles", JSON.stringify(roles));
 		}
-
 		return this;
 	}
 
@@ -72,5 +91,6 @@ export class TokenStorage {
 		localStorage.removeItem("accessToken");
 		localStorage.removeItem("refreshToken");
 		localStorage.removeItem("userRoles");
+		localStorage.removeItem("user");
 	}
 }
