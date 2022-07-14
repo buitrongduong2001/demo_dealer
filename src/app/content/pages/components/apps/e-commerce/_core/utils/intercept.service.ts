@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import {
 	HttpEvent,
 	HttpInterceptor,
 	HttpHandler,
 	HttpRequest,
-	HttpResponse
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+	HttpResponse,
+} from "@angular/common/http";
+import { Observable } from "rxjs";
+import { catchError, tap } from "rxjs/operators";
 
 @Injectable()
 export class InterceptService implements HttpInterceptor {
@@ -19,23 +19,23 @@ export class InterceptService implements HttpInterceptor {
 		// modify request
 		request = request.clone({
 			setHeaders: {
-				Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-			}
+				"X-Authorization": localStorage.getItem("accessToken"),
+			},
 		});
 		// console.log('----request----');
-		console.log(request);
+		console.log("Request: ", request);
 		// console.log('--- end of request---');
 
 		return next.handle(request).pipe(
 			tap(
-				event => {
+				(event) => {
 					if (event instanceof HttpResponse) {
 						// console.log('all looks good');
 						// http response status code
-						console.log(event.status);
+						console.log("EventStatus", event.status);
 					}
 				},
-				error => {
+				(error) => {
 					// http response status code
 					// console.log('----response----');
 					// console.error('status code:');

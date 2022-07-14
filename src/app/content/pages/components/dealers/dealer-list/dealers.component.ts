@@ -1,7 +1,9 @@
 import {
+	AfterViewInit,
 	ChangeDetectionStrategy,
 	Component,
 	ElementRef,
+	Input,
 	OnChanges,
 	OnInit,
 	SimpleChanges,
@@ -13,7 +15,9 @@ import {
 	MatPaginator,
 	MatSort,
 	MatTableDataSource,
+	PageEvent,
 } from "@angular/material";
+import { AuthenticationService } from "../../../../../core/auth/authentication.service";
 import { City } from "../../../../../core/class/dealer/city";
 import { Dealer } from "../../../../../core/class/dealer/dealer";
 import { District } from "../../../../../core/class/dealer/district";
@@ -33,8 +37,11 @@ export interface StatusDealer {
 	styleUrls: ["./dealers.component.scss"],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DealersComponent implements OnInit, OnChanges {
-	public url = `api/be-agent/agent/get/all`;
+export class DealersComponent implements OnInit, AfterViewInit {
+	pageIndex: any = 0;
+	sizeOfPage: number = 10;
+	pageSizeOptions: number[] = [10, 25, 100];
+	url: any = `api/be-agent/agent/get/all`;
 	posts: any;
 	dataSource: MatTableDataSource<Dealer> = new MatTableDataSource<Dealer>([]);
 	dealers: Dealer[] = [];
@@ -43,6 +50,8 @@ export class DealersComponent implements OnInit, OnChanges {
 	searchDealer: SearchDealer;
 	response: ResponseBE;
 	formData: FormGroup;
+	checkSearch: boolean = false;
+
 	optionStatus: StatusDealer[] = [
 		{ id: 1, title: "Kích hoạt" },
 		{ id: 2, title: "Chờ kích hoạt" },
@@ -70,27 +79,57 @@ export class DealersComponent implements OnInit, OnChanges {
 	selectAllLevel: number = 0;
 	selectAllCity: number = 0;
 	selectAllDistrict: number = 0;
-	@ViewChild(MatPaginator) paginator: MatPaginator;
+	// @ViewChild(MatPaginator) paginator: MatPaginator;
 	@ViewChild(MatSort) sort: MatSort;
 	@ViewChild("alertSuccessForm") alertSuccess: ElementRef;
 	@ViewChild("alertWarningLock") alertWarningLock: ElementRef;
+
 	constructor(
 		private _service: DealerApiService,
 		public dialog: MatDialog,
 		private subheaderService: SubheaderService
 	) {
 		this.subheaderService.setTitle("Quản lý đại lý");
-		this.getAllDealer();
+		this.getAllDealer(
+			`${this.url}?page=${this.pageIndex}&size=${this.sizeOfPage}`
+		);
 	}
-
-	getAllDealer() {
-		this._service.getAll(this.url).subscribe((res: any) => {
-			this.posts = res.data;
+	ngAfterViewInit() {
+		// this.dataSource. = this.paginator;
+	}
+	quantityItems: any;
+	getAllDealer(url: any) {
+		this._service.getAll(url).subscribe((res: any) => {
+			this.posts = res.data.dataTable;
 			this.dataSource = new MatTableDataSource(this.posts);
-			this.dataSource.paginator = this.paginator;
 			this.dataSource.sort = this.sort;
+			this.quantityItems = res.data.pageSize;
 		});
 	}
+	getEventPage(pageEvent: PageEvent) {
+		if (pageEvent.pageSize != this.sizeOfPage) {
+			this.sizeOfPage = pageEvent.pageSize;
+			this.pageIndex = 0;
+			if (!this.checkSearch) {
+				this.getAllDealer(
+					`${this.url}?page=${this.pageIndex}&size=${this.sizeOfPage}`
+				);
+			} else {
+				this.onSubmitForm();
+			}
+		}
+		if (pageEvent.pageIndex !== this.pageIndex) {
+			this.pageIndex = pageEvent.pageIndex;
+			if (!this.checkSearch) {
+				this.getAllDealer(
+					`${this.url}?page=${this.pageIndex}&size=${this.sizeOfPage}`
+				);
+			} else {
+				this.onSubmitForm();
+			}
+		}
+	}
+
 	ngOnInit(): void {
 		this.response = new ResponseBE();
 		this.searchDealer = {
@@ -108,9 +147,6 @@ export class DealersComponent implements OnInit, OnChanges {
 			selDistrict: new FormControl(this.selectAllDistrict),
 		});
 		this.getAllCities();
-	}
-	ngOnChanges(changes: SimpleChanges) {
-		console.log(changes);
 	}
 	getStatusApp(status: any) {
 		var strStatus = "";
@@ -146,13 +182,16 @@ export class DealersComponent implements OnInit, OnChanges {
 		this.searchDealer.levelDealer = this.formData.value.selLevel;
 		this.searchDealer.cityId = this.formData.value.selCity;
 		this.searchDealer.districtId = this.formData.value.selDistrict;
-
-		this._service.findDealer(this.searchDealer).subscribe((res: any) => {
-			this.posts = res.data != null ? res.data : [];
-			this.dataSource = new MatTableDataSource(this.posts);
-			this.dataSource.paginator = this.paginator;
-			this.dataSource.sort = this.sort;
-		});
+		this.url = `api/be-agent/search/dealer?page=${this.pageIndex}&size=${this.sizeOfPage}`;
+		this._service
+			.findDealer(this.searchDealer, this.url)
+			.subscribe((res: any) => {
+				this.posts =
+					res.data.dataTable != null ? res.data.dataTable : [];
+				this.dataSource = new MatTableDataSource(this.posts);
+				this.quantityItems = res.data.pageSize;
+				this.checkSearch = true;
+			});
 	}
 
 	returnCode: number;
@@ -165,7 +204,7 @@ export class DealersComponent implements OnInit, OnChanges {
 		dialogRef.afterClosed().subscribe((result) => {
 			this.returnCode = result;
 			if (this.returnCode == 1) {
-				this.getAllDealer();
+				this.getAllDealer(this.url);
 				this.response.msg = "Tạo mới đại lý thành công";
 				this.alertSuccess.nativeElement.classList.add("show");
 				this.alertSuccess.nativeElement.classList.remove("hide");

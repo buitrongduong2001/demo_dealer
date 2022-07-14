@@ -4,7 +4,7 @@
       <div class="m-portlet__body">
         <div class="m-card-profile">
           <div class="m-card-profile__title m--hide">
-            Your Profile
+            Thông tin tài khoản
           </div>
           <div class="m-card-profile__pic">
             <div class="m-card-profile__pic-wrapper">
@@ -12,8 +12,8 @@
             </div>
           </div>
           <div class="m-card-profile__details">
-            <span class="m-card-profile__name">Mark Andre</span>
-            <a href="" class="m-card-profile__email m-link">mark.andre@gmail.com</a>
+            <span class="m-card-profile__name">{{user.name}}</span>
+            <a href="" class="m-card-profile__email m-link">{{user.email}}</a>
           </div>
         </div>
         <ul class="m-nav m-nav--hover-bg m-portlet-fit--sides">
@@ -109,7 +109,7 @@
       <div class="m-portlet__head">
         <div class="m-portlet__head-tools">
         </div>
-        <div class="m-portlet__head-tools">
+        <!-- <div class="m-portlet__head-tools">
           <ul class="m-portlet__nav">
             <li class="m-portlet__nav-item m-portlet__nav-item--last">
               <div class="m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push" m-dropdown-toggle="hover" aria-expanded="true">
@@ -170,7 +170,7 @@
               </div>
             </li>
           </ul>
-        </div>
+        </div> -->
       </div>
       <div class="m-portlet__body">
         <form class="m-form m-form--fit m-form--label-align-right">
@@ -182,20 +182,26 @@
             </div>
             <div class="form-group m-form__group row">
               <div class="col-10 ml-auto">
-                <h3 class="m-form__section">1. Personal Details</h3>
+                <h3 class="m-form__section">1. Thông tin chi tiết</h3>
               </div>
             </div>
             <div class="form-group m-form__group row">
-              <label for="example-text-input" class="col-2 col-form-label">Full Name</label>
+              <label for="example-text-input" class="col-2 col-form-label">Họ tên</label>
               <div class="col-7">
-                <input class="form-control m-input" type="text" value="Mark Andre">
+                <input class="form-control m-input" type="text" value="{{user.name}}">
               </div>
             </div>
             <div class="form-group m-form__group row">
-              <label for="example-text-input" class="col-2 col-form-label">Occupation</label>
+              <label for="example-text-input" class="col-2 col-form-label">Vai trò</label>
               <div class="col-7">
-                <input class="form-control m-input" type="text" value="CTO">
-              </div>
+                <input *ngIf="user.role === 1; else engineering" class="form-control m-input" type="text" value="Admin">
+				<ng-template #engineering>
+					<input *ngIf="user.role === 2; else sale" class="form-control m-input" type="text" value="Kỹ thuật">
+				</ng-template>
+				<ng-template #sale>
+					<input *ngIf="user.role === 3" class="form-control m-input" type="text" value="Kinh doanh">
+				</ng-template>
+			</div>
             </div>
             <div class="form-group m-form__group row">
               <label for="example-text-input" class="col-2 col-form-label">Company Name</label>

@@ -225,10 +225,17 @@ table {
 }
 
 .btn-edit-dealer {
-	width: 30px;
+	width: 21px;
+	min-width: 21px;
+	padding: 0 ;
+	box-shadow:none;
+	margin-right: 10px;
 }
 .btn-lock-dealer {
-	width: 30px;
+	width: 21px;
+	min-width: 21px;
+	padding: 0 ;
+	box-shadow:none;
 }
 
 // Css warning

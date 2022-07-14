@@ -14,12 +14,14 @@ import { UtilsService } from "../services/utils.service";
 import { AccessData } from "./access-data";
 import { Credential } from "./credential";
 import { StaffLoginDto } from "./staff-login";
+import { RefreshData } from "./refresh-data";
+import * as shajs from "sha.js";
 
 @Injectable()
 export class AuthenticationService implements AuthService {
 	API_URL = "http://localhost:8098/agent-api/api/auth";
 	API_ENDPOINT_LOGIN = "/login";
-	API_ENDPOINT_REFRESH = "/refresh";
+	API_ENDPOINT_REFRESH = "/token";
 	API_ENDPOINT_REGISTER = "/register";
 
 	public onCredentialUpdated$: Subject<AccessData>;
@@ -73,17 +75,39 @@ export class AuthenticationService implements AuthService {
 	 * Function, that should perform refresh token verifyTokenRequest
 	 * @description Should be successfully completed so interceptor
 	 * can execute pending requests or retry original one
-	 * @returns {Observable<any>}
+	 * @returns {Observable<RefreshData>}
 	 */
-	public refreshToken(): Observable<AccessData> {
-		return this.tokenStorage.getRefreshToken().pipe(
-			switchMap((refreshToken: string) => {
-				return this.http.get<AccessData>(
-					this.API_URL +
-						this.API_ENDPOINT_REFRESH +
-						"?" +
-						this.util.urlParam(refreshToken)
-				);
+	generateCheckSum(...input) {
+		var rawPass = "";
+		for (const t of input) {
+			rawPass += t;
+		}
+		const hashPass = shajs("sha256").update(rawPass).digest("hex");
+		return hashPass;
+	}
+	public refreshToken(): Observable<any> {
+		const urlRefresh = this.API_URL + this.API_ENDPOINT_REFRESH;
+
+		var token: any = "";
+		this.tokenStorage.getAccessToken().subscribe((res: any) => {
+			token = res;
+		});
+		const checkSum = this.generateCheckSum(
+			token,
+			"29a49d844c009abb32bcb5094bd09abb32bcb509"
+		);
+		const refreshData: RefreshData = {
+			checksum: checkSum,
+			refreshToken: token,
+		};
+
+		return this.http.post<StaffLoginDto>(urlRefresh, refreshData).pipe(
+			map((result: any) => {
+				if (result instanceof Array) {
+					return result.pop();
+				}
+				location.reload();
+				return result;
 			}),
 			tap(this.saveAccessData.bind(this)),
 			catchError((err) => {
@@ -119,7 +143,6 @@ export class AuthenticationService implements AuthService {
 	 * @param {DealerLoginDto} infoDealer
 	 * @returns {Observable<any>}
 	 */
-
 	public login(infoDealer: StaffLoginDto): Observable<any> {
 		// Expecting response from API
 		// tslint:disable-next-line:max-line-length
@@ -147,7 +170,6 @@ export class AuthenticationService implements AuthService {
 		return (error: any): Observable<any> => {
 			// TODO: send the error to remote logging infrastructure
 			console.error(error); // log to console instead
-
 			// Let the app keep running by returning an empty result.
 			return from(result);
 		};
@@ -160,7 +182,7 @@ export class AuthenticationService implements AuthService {
 		this.tokenStorage.clear();
 		if (refresh) {
 			// location.reload();
-			location.reload(true);
+			location.reload();
 		}
 	}
 
@@ -173,11 +195,18 @@ export class AuthenticationService implements AuthService {
 		if (typeof accessData !== "undefined") {
 			this.tokenStorage
 				.setAccessToken(accessData.token)
-				.setRefreshToken(accessData.refreshToken)
-				.setUserRoles(accessData.user.keycodeArr);
+				.setUserRoles(accessData.user.keycodeArr)
+				.setUserLogin(accessData.user);
 			this.onCredentialUpdated$.next(accessData);
 		}
 	}
+
+	// private saveRefreshToken(accessData: AccessData) {
+	// 	if (typeof accessData !== "undefined") {
+	// 		this.tokenStorage.setRefreshToken(accessData.token);
+	// 		this.onCredentialUpdated$.next(accessData);
+	// 	}
+	// }
 
 	/**
 	 * Submit registration request
@@ -188,7 +217,6 @@ export class AuthenticationService implements AuthService {
 		// dummy token creation
 		credential = Object.assign({}, credential, {
 			accessToken: "access-token-" + Math.random(),
-			refreshToken: "access-token-" + Math.random(),
 			roles: ["USER"],
 		});
 		return this.http

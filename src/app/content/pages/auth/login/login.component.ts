@@ -97,12 +97,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 	ngOnInit(): void {
 		// demo message to show
-		// if (!this.authNoticeService.onNoticeChanged$.getValue()) {
-		// 	const initialNotice = Use account
-		// 	<strong>admin@demo.com</strong> and password
-		// 	<strong>demo</strong> to continue.`;
-		// 	this.authNoticeService.setNotice(initialNotice, "success");
-		// }
+		if (!this.authNoticeService.onNoticeChanged$.getValue()) {
+			this.authNoticeService.setNotice("", "success");
+		}
 	}
 
 	ngOnDestroy(): void {

@@ -36,6 +36,7 @@ import {
 	MAT_DATE_LOCALE,
 	MAT_DATE_FORMATS,
 	DateAdapter,
+	MatPaginatorIntl,
 } from "@angular/material";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatCardModule } from "@angular/material/card";
@@ -56,6 +57,7 @@ import { DealersCreateComponent } from "./dealers-create/dealers-create.componen
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AddMemberComponent } from "./dealers-create/add-member/add-member.component";
 import { MomentDateAdapter } from "@angular/material-moment-adapter";
+import { CustomMatPaginatorIntl } from "./customs/custom-mat-paginator-int";
 const routes: Routes = [
 	{
 		path: "",
@@ -141,6 +143,10 @@ export const MY_FORMATS = {
 			deps: [MAT_DATE_LOCALE],
 		},
 		{ provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+		{
+			provide: MatPaginatorIntl,
+			useClass: CustomMatPaginatorIntl,
+		},
 	],
 	declarations: [
 		DealersComponent,
